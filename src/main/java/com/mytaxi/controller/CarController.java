@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mytaxi.controller.mapper.CarMapper;
 import com.mytaxi.datatransferobject.CarDTO;
 import com.mytaxi.exception.EntityNotFoundException;
-import com.mytaxi.service.car.CarService;
+import com.mytaxi.facade.car.CarFacade;
 
 /**
  * All operations with a car will be routed by this controller.
@@ -21,19 +21,21 @@ import com.mytaxi.service.car.CarService;
 @RequestMapping("v1/cars")
 public class CarController
 {
-    private final CarService carService;
+
+    private final CarFacade carFacade;
 
 
     @Autowired
-    public CarController(final CarService carService)
+    public CarController(final CarFacade carFacade)
     {
-        this.carService = carService;
+        this.carFacade = carFacade;
     }
-    
+
+
     @GetMapping("/{carId}")
     public CarDTO getDriver(@Valid @PathVariable long carId) throws EntityNotFoundException
     {
-        return CarMapper.makeCarDTO(carService.findCarById(carId));
+        return CarMapper.makeCarDTO(carFacade.findCarById(carId));
     }
 
 }
