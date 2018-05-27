@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultDriverService implements DriverService
 {
 
-    private static org.slf4j.Logger LOG = LoggerFactory.getLogger(DefaultDriverService.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(DefaultDriverService.class);
 
     private final DriverRepository driverRepository;
 
@@ -62,7 +62,7 @@ public class DefaultDriverService implements DriverService
         }
         catch (DataIntegrityViolationException e)
         {
-            LOG.warn("Some constraints are thrown due to driver creation", e);
+            logger.warn("Some constraints are thrown due to driver creation", e);
             throw new ConstraintsViolationException(e.getMessage());
         }
         return driver;
@@ -115,7 +115,8 @@ public class DefaultDriverService implements DriverService
 
     private DriverDO findDriverChecked(Long driverId) throws EntityNotFoundException
     {
-        return driverRepository.findById(driverId)
+        return driverRepository
+            .findById(driverId)
             .orElseThrow(() -> new EntityNotFoundException("Could not find entity with id: " + driverId));
     }
 

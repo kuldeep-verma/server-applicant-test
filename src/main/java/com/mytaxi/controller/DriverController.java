@@ -67,7 +67,7 @@ public class DriverController
     @PutMapping("/{driverId}")
     public void updateLocation(
         @Valid @PathVariable long driverId, @RequestParam double longitude, @RequestParam double latitude)
-        throws ConstraintsViolationException, EntityNotFoundException
+        throws EntityNotFoundException
     {
         driverService.updateLocation(driverId, longitude, latitude);
     }
@@ -75,7 +75,6 @@ public class DriverController
 
     @GetMapping
     public List<DriverDTO> findDrivers(@RequestParam OnlineStatus onlineStatus)
-        throws ConstraintsViolationException, EntityNotFoundException
     {
         return DriverMapper.makeDriverDTOList(driverService.find(onlineStatus));
     }
