@@ -55,7 +55,7 @@ public class DefaultCarService implements CarService
     public void delete(Long carId) throws EntityNotFoundException
     {
         CarDO carDO = findCar(carId);
-        carDO.setDeleted(true);
+        carDO.setIsDeleted(true);
     }
 
 

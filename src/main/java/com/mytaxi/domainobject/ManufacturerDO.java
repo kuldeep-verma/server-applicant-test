@@ -10,8 +10,17 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
 @Entity
 @Table(name = "manufacturer")
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class ManufacturerDO
 {
     @Id
@@ -22,6 +31,6 @@ public class ManufacturerDO
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime dateCreated = ZonedDateTime.now();
 
-    @Column
+    @Column(name = "name")
     private String name;
 }

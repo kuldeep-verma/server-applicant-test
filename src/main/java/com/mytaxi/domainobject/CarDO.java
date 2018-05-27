@@ -30,7 +30,7 @@ public class CarDO
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "date_created", nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime dateCreated = ZonedDateTime.now();
 
@@ -47,11 +47,11 @@ public class CarDO
     @Column(name = "seat_count")
     private Integer seatCount;
 
-    @Column
-    private Boolean convertible;
+    @Column(name = "convertible")
+    private Boolean isConvertible;
 
-    @Column(nullable = false)
-    private Boolean deleted = false;
+    @Column(name = "deleted", nullable = false)
+    private Boolean isDeleted = false;
 
     @OneToOne
     @JoinColumn(name = "manufacturer")
