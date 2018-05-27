@@ -82,10 +82,11 @@ public class DriverController
         return DriverMapper.makeDriverDTOList(driverFacade.find(onlineStatus));
     }
 
-    /*@PostMapping("/selectCar")
-    public DriverDTO selectCar(@RequestParam long driverId, @RequestParam long carId) throws EntityNotFoundException,
+
+    @PostMapping("/selectCar")
+    public DriverDTO selectCar(@RequestParam long driverId, @RequestParam long carId) throws EntityNotFoundException, ConstraintsViolationException
     {
-    
-        return driverService.selectCar(driverId, carId);
-    }*/
+
+        return driverFacade.selectCar(driverId, carId);
+    }
 }

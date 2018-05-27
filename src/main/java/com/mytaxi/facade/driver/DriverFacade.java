@@ -2,6 +2,7 @@ package com.mytaxi.facade.driver;
 
 import java.util.List;
 
+import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
@@ -51,4 +52,14 @@ public interface DriverFacade
      * @return list of drivers
      */
     List<DriverDO> find(OnlineStatus onlineStatus);
+
+
+    /**
+     * Select a car by Driver
+     * @param driverId
+     * @param carId
+     * @return
+     * @throws EntityNotFoundException
+     */
+    DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException;
 }

@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mytaxi.controller.mapper.DriverMapper;
+import com.mytaxi.datatransferobject.DriverDTO;
+import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
+import com.mytaxi.service.car.CarService;
 import com.mytaxi.service.driver.DriverService;
 
 @Service
@@ -16,11 +20,14 @@ public class DefaultDriverFacade implements DriverFacade
 {
     private final DriverService driverService;
 
+    private final CarService carService;
+
 
     @Autowired
-    public DefaultDriverFacade(final DriverService driverService)
+    public DefaultDriverFacade(final DriverService driverService, final CarService carService)
     {
         this.driverService = driverService;
+        this.carService = carService;
     }
 
 
@@ -59,6 +66,21 @@ public class DefaultDriverFacade implements DriverFacade
     {
 
         return driverService.find(onlineStatus);
+    }
+
+
+    @Override
+    public DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException
+    {
+        DriverDO driverDO = driverService.find(driverId);
+        CarDO carDO = carService.findCarById(carId);
+        if (null != driverDO && null != carDO)
+        {            
+            driverDO.setCarDO(carDO);
+            driverDO = driverService.create(driverDO);
+        }
+
+        return DriverMapper.makeDriverDTO(driverDO, carDO);
     }
 
 }

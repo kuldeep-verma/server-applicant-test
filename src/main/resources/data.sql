@@ -41,14 +41,22 @@ values
  'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'ONLINE',
 'driver08pw', 'driver08');
 
---Create 1 manufacturer
+--Create 2 manufacturer
 
 INSERT INTO manufacturer(id, date_created, name) VALUES(1,  now(), 'BMW');
 
--- Create 2 Cars
+INSERT INTO manufacturer(id, date_created, name) VALUES(2,  now(), 'Volkswagen');
+
+-- Create 4 Cars
 
 INSERT INTO car(id, license_plate, engine_type, color, seat_count, convertible, manufacturer, deleted, date_created)
-VALUES(1, 'KV 001', 'Gas', 'Black', 2, true, 1, false, now());
+VALUES(1, 'KV 001', 'Gas', 'Black', 5, true, 1, false, now());
 
 INSERT INTO car(id, license_plate, engine_type, color, seat_count, convertible, manufacturer, deleted, date_created)
-VALUES(2, 'KV 010', 'Electric', 'White', 4, false, 1, false, now());
+VALUES(2, 'KV 010', 'Electric', 'White', 5, false, 1, false, now());
+
+INSERT INTO car(id, license_plate, engine_type, color, seat_count, convertible, manufacturer, deleted, date_created)
+VALUES(3, 'KV 100', 'Gas', 'Red', 5, true, 1, false, now());
+
+INSERT INTO car(id, license_plate, engine_type, color, seat_count, convertible, manufacturer, deleted, date_created)
+VALUES(4, 'KV 999', 'Electric', 'Blue', 7, false, 2, false, now());
