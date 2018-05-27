@@ -13,8 +13,17 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
 @Entity
 @Table(name = "car")
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarDO
 {
     @Id
@@ -48,147 +57,4 @@ public class CarDO
     @JoinColumn(name = "manufacturer")
     private ManufacturerDO manufacturerDO;
 
-    /**
-     * @return the id
-     */
-    public Long getId()
-    {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    /**
-     * @return the dateCreated
-     */
-    public ZonedDateTime getDateCreated()
-    {
-        return dateCreated;
-    }
-
-    /**
-     * @param dateCreated the dateCreated to set
-     */
-    public void setDateCreated(ZonedDateTime dateCreated)
-    {
-        this.dateCreated = dateCreated;
-    }
-
-    /**
-     * @return the color
-     */
-    public String getColor()
-    {
-        return color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(String color)
-    {
-        this.color = color;
-    }
-
-    /**
-     * @return the licensePlate
-     */
-    public String getLicensePlate()
-    {
-        return licensePlate;
-    }
-
-    /**
-     * @param licensePlate the licensePlate to set
-     */
-    public void setLicensePlate(String licensePlate)
-    {
-        this.licensePlate = licensePlate;
-    }
-
-    /**
-     * @return the engineType
-     */
-    public String getEngineType()
-    {
-        return engineType;
-    }
-
-    /**
-     * @param engineType the engineType to set
-     */
-    public void setEngineType(String engineType)
-    {
-        this.engineType = engineType;
-    }
-
-    /**
-     * @return the seatCount
-     */
-    public Integer getSeatCount()
-    {
-        return seatCount;
-    }
-
-    /**
-     * @param seatCount the seatCount to set
-     */
-    public void setSeatCount(Integer seatCount)
-    {
-        this.seatCount = seatCount;
-    }
-
-    /**
-     * @return the convertible
-     */
-    public Boolean getConvertible()
-    {
-        return convertible;
-    }
-
-    /**
-     * @param convertible the convertible to set
-     */
-    public void setConvertible(Boolean convertible)
-    {
-        this.convertible = convertible;
-    }
-
-    /**
-     * @return the deleted
-     */
-    public Boolean getDeleted()
-    {
-        return deleted;
-    }
-
-    /**
-     * @param deleted the deleted to set
-     */
-    public void setDeleted(Boolean deleted)
-    {
-        this.deleted = deleted;
-    }
-
-    /**
-     * @return the manufacturer
-     */
-    public ManufacturerDO getManufacturer()
-    {
-        return manufacturerDO;
-    }
-
-    /**
-     * @param manufacturerDO the manufacturer to set
-     */
-    public void setManufacturer(ManufacturerDO manufacturerDO)
-    {
-        this.manufacturerDO = manufacturerDO;
-    }
 }

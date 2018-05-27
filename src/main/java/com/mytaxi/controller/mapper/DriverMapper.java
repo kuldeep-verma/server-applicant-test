@@ -1,11 +1,12 @@
 package com.mytaxi.controller.mapper;
 
-import com.mytaxi.datatransferobject.DriverDTO;
-import com.mytaxi.domainobject.DriverDO;
-import com.mytaxi.domainvalue.GeoCoordinate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.mytaxi.datatransferobject.DriverDTO;
+import com.mytaxi.domainobject.DriverDO;
+import com.mytaxi.domainvalue.GeoCoordinate;
 
 public class DriverMapper
 {
