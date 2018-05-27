@@ -2,6 +2,7 @@ package com.mytaxi.service.car;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
 
 import com.mytaxi.dataaccessobject.CarRepository;
 import com.mytaxi.domainobject.CarDO;
@@ -12,6 +13,7 @@ import com.mytaxi.exception.EntityNotFoundException;
  * Service to encapsulate the link between DAO and controller and to have business logic for some car specific things.
  * <p/>
  */
+@Service
 public class DefaultCarService implements CarService
 {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(DefaultCarService.class);
