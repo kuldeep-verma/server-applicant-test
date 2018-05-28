@@ -62,4 +62,12 @@ public interface DriverFacade
      * @throws EntityNotFoundException
      */
     DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException;
+
+
+    /**
+     * deselect a car by driver
+     * @param driverId
+     * @throws EntityNotFoundException
+     */
+    void deselectCar(long driverId) throws EntityNotFoundException, ConstraintsViolationException;
 }

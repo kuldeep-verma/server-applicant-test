@@ -2,6 +2,7 @@ package com.mytaxi.facade.driver;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import com.mytaxi.service.driver.DriverService;
 @Service
 public class DefaultDriverFacade implements DriverFacade
 {
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(DefaultDriverFacade.class);
+
     private final DriverService driverService;
 
     private final CarService carService;
@@ -75,12 +78,32 @@ public class DefaultDriverFacade implements DriverFacade
         DriverDO driverDO = driverService.find(driverId);
         CarDO carDO = carService.findCarById(carId);
         if (null != driverDO && null != carDO)
-        {            
+        {
             driverDO.setCarDO(carDO);
             driverDO = driverService.create(driverDO);
         }
 
         return DriverMapper.makeDriverDTO(driverDO, carDO);
+    }
+
+
+    @Override
+    public void deselectCar(long driverId) throws EntityNotFoundException, ConstraintsViolationException
+    {
+        DriverDO driverDO = driverService.find(driverId);
+        if (null != driverDO)
+        {
+            CarDO carDO = driverDO.getCarDO();
+            if (null != carDO)
+            {
+                driverDO.setCarDO(null);
+                driverService.create(driverDO);
+            }
+            else
+            {
+                logger.info("No car associated to driver");
+            }
+        }
     }
 
 }

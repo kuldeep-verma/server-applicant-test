@@ -89,4 +89,11 @@ public class DriverController
 
         return driverFacade.selectCar(driverId, carId);
     }
+
+
+    @DeleteMapping("/deselectCar")
+    public void deselectCar(@RequestParam long driverId) throws EntityNotFoundException, ConstraintsViolationException
+    {
+        driverFacade.deselectCar(driverId);
+    }
 }
