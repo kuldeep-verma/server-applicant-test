@@ -2,8 +2,10 @@ package com.mytaxi.domainobject;
 
 import java.time.ZonedDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,7 +56,7 @@ public class CarDO
     @Column(name = "deleted", nullable = false)
     private Boolean isDeleted = false;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer")
     private ManufacturerDO manufacturerDO;
 

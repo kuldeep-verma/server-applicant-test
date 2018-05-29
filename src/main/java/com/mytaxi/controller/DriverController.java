@@ -86,7 +86,6 @@ public class DriverController
     @PostMapping("/selectCar")
     public DriverDTO selectCar(@RequestParam long driverId, @RequestParam long carId) throws EntityNotFoundException, ConstraintsViolationException
     {
-
         return driverFacade.selectCar(driverId, carId);
     }
 
