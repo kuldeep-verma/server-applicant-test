@@ -52,7 +52,6 @@ public class DefaultDriverFacade implements DriverFacade
     public void delete(Long driverId) throws EntityNotFoundException
     {
         driverService.delete(driverId);
-
     }
 
 
@@ -60,14 +59,12 @@ public class DefaultDriverFacade implements DriverFacade
     public void updateLocation(long driverId, double longitude, double latitude) throws EntityNotFoundException
     {
         driverService.updateLocation(driverId, longitude, latitude);
-
     }
 
 
     @Override
     public List<DriverDO> find(OnlineStatus onlineStatus)
     {
-
         return driverService.find(onlineStatus);
     }
 

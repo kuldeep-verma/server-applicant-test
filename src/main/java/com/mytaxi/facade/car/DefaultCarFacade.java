@@ -19,7 +19,6 @@ public class DefaultCarFacade implements CarFacade
     @Override
     public CarDO findCarById(Long carId) throws EntityNotFoundException
     {
-
         return carService.findCarById(carId);
     }
 
@@ -35,7 +34,6 @@ public class DefaultCarFacade implements CarFacade
     public void delete(Long carId) throws EntityNotFoundException
     {
         carService.delete(carId);
-
     }
 
 }
