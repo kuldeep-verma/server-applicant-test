@@ -1,20 +1,15 @@
-package com.mytaxi.service.driver;
+package com.mytaxi.facade.driver;
 
 import java.util.List;
 
+import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 
-/**
- * 
- * Deriver service
- *
- */
-public interface DriverService
+public interface DriverFacade
 {
-
     /**
      * To find a driver, by id
      * @param driverId
@@ -57,4 +52,22 @@ public interface DriverService
      * @return list of drivers
      */
     List<DriverDO> find(OnlineStatus onlineStatus);
+
+
+    /**
+     * Select a car by Driver
+     * @param driverId
+     * @param carId
+     * @return
+     * @throws EntityNotFoundException
+     */
+    DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException;
+
+
+    /**
+     * deselect a car by driver
+     * @param driverId
+     * @throws EntityNotFoundException
+     */
+    void deselectCar(long driverId) throws EntityNotFoundException, ConstraintsViolationException;
 }
