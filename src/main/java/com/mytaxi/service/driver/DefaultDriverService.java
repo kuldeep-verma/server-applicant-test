@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mytaxi.dataaccessobject.DriverRepository;
+import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.GeoCoordinate;
 import com.mytaxi.domainvalue.OnlineStatus;
@@ -120,5 +121,17 @@ public class DefaultDriverService implements DriverService
         return driverRepository
             .findById(driverId)
             .orElseThrow(() -> new EntityNotFoundException("Could not find entity with id: " + driverId));
+    }
+
+
+    @Override
+    public boolean isCarAlreadyInUse(CarDO carDO)
+    {
+        boolean returnVal = false;
+        if (null != driverRepository.findByCarDO(carDO))
+        {
+            returnVal = true;
+        }
+        return returnVal;
     }
 }

@@ -11,7 +11,9 @@ import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverIsOfflineException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
 import com.mytaxi.service.driver.DriverService;
@@ -70,14 +72,26 @@ public class DefaultDriverFacade implements DriverFacade
 
 
     @Override
-    public DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException
+    public DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
         DriverDO driverDO = driverService.find(driverId);
         CarDO carDO = carService.findCarById(carId);
         if (null != driverDO && null != carDO)
         {
-            driverDO.setCarDO(carDO);
-            driverDO = driverService.create(driverDO);
+            if (OnlineStatus.ONLINE.equals(driverDO.getOnlineStatus()))
+            {
+                boolean isCarAlreadyInUser = driverService.isCarAlreadyInUse(carDO);
+                if (isCarAlreadyInUser)
+                {
+                    throw new CarAlreadyInUseException("Car already in use");
+                }
+                driverDO.setCarDO(carDO);
+                driverDO = driverService.create(driverDO);
+            }
+            else
+            {
+                throw new DriverIsOfflineException("Driver is offline");
+            }
         }
 
         return DriverMapper.makeDriverDTO(driverDO, carDO);
@@ -102,5 +116,4 @@ public class DefaultDriverFacade implements DriverFacade
             }
         }
     }
-
 }

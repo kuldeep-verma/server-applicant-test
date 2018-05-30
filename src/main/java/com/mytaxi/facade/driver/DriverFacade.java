@@ -5,7 +5,9 @@ import java.util.List;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverIsOfflineException;
 import com.mytaxi.exception.EntityNotFoundException;
 
 public interface DriverFacade
@@ -61,7 +63,7 @@ public interface DriverFacade
      * @return
      * @throws EntityNotFoundException
      */
-    DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException;
+    DriverDTO selectCar(Long driverId, Long carId) throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException;
 
 
     /**
