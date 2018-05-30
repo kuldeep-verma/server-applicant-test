@@ -146,4 +146,32 @@ public class DriverServiceTest
         assertEquals(false, isCarInUse);
     }
 
+
+    @Test
+    public void testFindDriverByUsername() throws EntityNotFoundException
+    {
+        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
+        when(driverRepository.findByUsernameIgnoreCase(any(String.class))).thenReturn(Optional.of(mockDriverDO));
+
+        DriverDO result = defaultDriverService.findDriverByUsername("TestUser");
+        assertEquals(mockDriverDO, result);
+        verify(driverRepository, times(1)).findByUsernameIgnoreCase(any(String.class));
+    }
+
+
+    @Test
+    public void testFindDriversByCarAttributes() throws EntityNotFoundException
+    {
+        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
+        List<DriverDO> driverDOs = new ArrayList<>();
+        driverDOs.add(mockDriverDO);
+
+        when(driverRepository.findDriversByCarAttributes(any(CarDO.class))).thenReturn(Optional.of(driverDOs));
+
+        CarDO carDO = new CarDO(132l, ZonedDateTime.now(), "White", "PK 101", "Gas", 5, true, false, null);
+        List<DriverDO> resultDriverDOs = defaultDriverService.findDriversByCarAttributes(carDO);
+
+        assertEquals(driverDOs, resultDriverDOs);
+    }
+
 }

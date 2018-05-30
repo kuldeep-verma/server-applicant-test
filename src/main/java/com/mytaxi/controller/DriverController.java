@@ -1,5 +1,6 @@
 package com.mytaxi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mytaxi.controller.mapper.CarMapper;
 import com.mytaxi.controller.mapper.DriverMapper;
+import com.mytaxi.datatransferobject.CarDTO;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
@@ -97,6 +100,24 @@ public class DriverController
     public void deselectCar(@RequestParam long driverId) throws EntityNotFoundException, ConstraintsViolationException
     {
         driverFacade.deselectCar(driverId);
+    }
+
+
+    @GetMapping("search/username/{username}")
+    public DriverDTO searchDriverByUsername(@Valid @PathVariable String username) throws EntityNotFoundException
+    {
+        return DriverMapper.makeDriverDTO(driverFacade.findDriverByUsername(username));
+    }
+
+
+    @PostMapping("/search/carAttributes")
+    public List<DriverDTO> searchDriversByCarAttributes(@Valid @RequestBody CarDTO carDTO) throws EntityNotFoundException
+    {
+        List<DriverDO> driverDOs = driverFacade.findDriversByCarAttributes(CarMapper.makeCarDO(carDTO));
+
+        List<DriverDTO> driverDTOs = new ArrayList<>();
+        driverDOs.forEach(driverDO -> driverDTOs.add(DriverMapper.makeDriverDTO(driverDO, driverDO.getCarDO())));
+        return driverDTOs;
     }
 
 }

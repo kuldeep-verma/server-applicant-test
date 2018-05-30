@@ -120,7 +120,7 @@ public class DefaultDriverService implements DriverService
     {
         return driverRepository
             .findById(driverId)
-            .orElseThrow(() -> new EntityNotFoundException("Could not find entity with id: " + driverId));
+            .orElseThrow(() -> new EntityNotFoundException("Could not find driver with id: " + driverId));
     }
 
 
@@ -133,5 +133,21 @@ public class DefaultDriverService implements DriverService
             returnVal = true;
         }
         return returnVal;
+    }
+
+
+    @Override
+    public DriverDO findDriverByUsername(String username) throws EntityNotFoundException
+    {
+        return driverRepository
+            .findByUsernameIgnoreCase(username)
+            .orElseThrow(() -> new EntityNotFoundException("Could not find driver with name: " + username));
+    }
+
+
+    @Override
+    public List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException
+    {
+        return driverRepository.findDriversByCarAttributes(carDO).orElseThrow(() -> new EntityNotFoundException("No result found"));
     }
 }

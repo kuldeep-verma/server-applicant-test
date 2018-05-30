@@ -112,8 +112,22 @@ public class DefaultDriverFacade implements DriverFacade
             }
             else
             {
-                logger.info("No car associated to driver");
+                logger.info("No car is associated to the driver to deselect");
             }
         }
+    }
+
+
+    @Override
+    public DriverDO findDriverByUsername(String username) throws EntityNotFoundException
+    {
+        return driverService.findDriverByUsername(username);
+    }
+
+
+    @Override
+    public List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException
+    {
+        return driverService.findDriversByCarAttributes(carDO);
     }
 }
