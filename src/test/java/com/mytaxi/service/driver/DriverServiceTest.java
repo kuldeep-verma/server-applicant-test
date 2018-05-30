@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mytaxi.dataaccessobject.DriverRepository;
+import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
+import com.mytaxi.domainobject.ManufacturerDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
@@ -110,6 +113,37 @@ public class DriverServiceTest
         List<DriverDO> resultDriverDOs = defaultDriverService.find(OnlineStatus.ONLINE);
 
         assertEquals(driverDOs, resultDriverDOs);
+    }
+
+
+    @Test
+    public void testIsCarAlreadyInUseWhenDriverIsUsingACar()
+    {
+        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+
+        when(driverRepository.findByCarDO(carDO)).thenReturn(mockDriverDO);
+
+        boolean isCarInUse = defaultDriverService.isCarAlreadyInUse(carDO);
+
+        assertEquals(true, isCarInUse);
+    }
+
+
+    @Test
+    public void testIsCarAlreadyInUseWhenDriverIsNotUsingACar()
+    {
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+
+        when(driverRepository.findByCarDO(carDO)).thenReturn(null);
+
+        boolean isCarInUse = defaultDriverService.isCarAlreadyInUse(carDO);
+
+        assertEquals(false, isCarInUse);
     }
 
 }

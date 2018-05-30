@@ -21,7 +21,9 @@ import com.mytaxi.controller.mapper.DriverMapper;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverIsOfflineException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.facade.driver.DriverFacade;
 
@@ -84,7 +86,8 @@ public class DriverController
 
 
     @PostMapping("/selectCar")
-    public DriverDTO selectCar(@RequestParam long driverId, @RequestParam long carId) throws EntityNotFoundException, ConstraintsViolationException
+    public DriverDTO selectCar(@RequestParam long driverId, @RequestParam long carId)
+        throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
         return driverFacade.selectCar(driverId, carId);
     }
@@ -95,4 +98,5 @@ public class DriverController
     {
         driverFacade.deselectCar(driverId);
     }
+
 }

@@ -22,7 +22,9 @@ import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainobject.ManufacturerDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverIsOfflineException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
 import com.mytaxi.service.driver.DriverService;
@@ -128,10 +130,12 @@ public class DriverFacadeTest
 
 
     @Test
-    public void testSelectCar() throws EntityNotFoundException, ConstraintsViolationException
+    public void testSelectCar() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
         DriverDO driverDO = new DriverDO("TestUser", "pass");
+        driverDO.setOnlineStatus(OnlineStatus.ONLINE);
         when(driverService.find(any(Long.class))).thenReturn(driverDO);
+
         ManufacturerDO manufacturerDO = new ManufacturerDO();
         manufacturerDO.setName("VW");
         CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
@@ -150,12 +154,52 @@ public class DriverFacadeTest
 
 
     @Test(expected = EntityNotFoundException.class)
-    public void testSelectCarThrowExceptionWhenCarNotFound() throws EntityNotFoundException, ConstraintsViolationException
+    public void testSelectCarThrowExceptionWhenCarNotFound() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
         DriverDO driverDO = new DriverDO("TestUser", "pass");
         when(driverService.find(any(Long.class))).thenReturn(driverDO);
 
         when(carService.findCarById(any(Long.class))).thenThrow(new EntityNotFoundException("Car not found"));
+
+        defaultDriverFacade.selectCar(1l, 1l);
+
+        verify(driverService, times(1)).find(any(Long.class));
+        verify(carService, times(1)).findCarById(any(Long.class));
+    }
+
+
+    @Test(expected = DriverIsOfflineException.class)
+    public void testSelectCarThrowExceptionDriverIsOffline() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
+    {
+        DriverDO driverDO = new DriverDO("TestUser", "pass");
+        driverDO.setOnlineStatus(OnlineStatus.OFFLINE);
+        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+        when(carService.findCarById(any(Long.class))).thenReturn(carDO);
+
+        defaultDriverFacade.selectCar(1l, 1l);
+
+        verify(driverService, times(1)).find(any(Long.class));
+        verify(carService, times(1)).findCarById(any(Long.class));
+    }
+
+
+    @Test(expected = CarAlreadyInUseException.class)
+    public void testSelectCarThrowExceptionCarAlreadyInUse() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
+    {
+        DriverDO driverDO = new DriverDO("TestUser", "pass");
+        driverDO.setOnlineStatus(OnlineStatus.ONLINE);
+        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+        when(carService.findCarById(any(Long.class))).thenReturn(carDO);
+
+        when(driverService.isCarAlreadyInUse(any(CarDO.class))).thenReturn(true);
 
         defaultDriverFacade.selectCar(1l, 1l);
 
