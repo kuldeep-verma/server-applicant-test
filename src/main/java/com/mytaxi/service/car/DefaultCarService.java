@@ -8,6 +8,7 @@ import com.mytaxi.dataaccessobject.CarRepository;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
+import com.mytaxi.util.Constants;
 
 /**
  * Service to encapsulate the link between DAO and controller and to have business logic for some car specific things.
@@ -44,7 +45,7 @@ public class DefaultCarService implements CarService
         }
         catch (DataIntegrityViolationException e)
         {
-            logger.warn("Some constraints are thrown due to car creation", e);
+            logger.warn(Constants.ERR_MSG_CONSTRAINTS, e);
             throw new ConstraintsViolationException(e.getMessage());
         }
         return car;
@@ -63,7 +64,7 @@ public class DefaultCarService implements CarService
     {
         return carRepository
             .findById(carId)
-            .orElseThrow(() -> new EntityNotFoundException("Could not find entity with id: " + carId));
+            .orElseThrow(() -> new EntityNotFoundException(Constants.ERR_MSG_COULD_NOT_FIND_CAR + carId));
     }
 
 }

@@ -17,6 +17,7 @@ import com.mytaxi.exception.DriverIsOfflineException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
 import com.mytaxi.service.driver.DriverService;
+import com.mytaxi.util.Constants;
 
 @Service
 public class DefaultDriverFacade implements DriverFacade
@@ -83,14 +84,14 @@ public class DefaultDriverFacade implements DriverFacade
                 boolean isCarAlreadyInUser = driverService.isCarAlreadyInUse(carDO);
                 if (isCarAlreadyInUser)
                 {
-                    throw new CarAlreadyInUseException("Car already in use");
+                    throw new CarAlreadyInUseException(Constants.ERR_MSG_CAR_ALREADY_IN_USE);
                 }
                 driverDO.setCarDO(carDO);
                 driverDO = driverService.create(driverDO);
             }
             else
             {
-                throw new DriverIsOfflineException("Driver is offline");
+                throw new DriverIsOfflineException(Constants.ERR_MSG_DRIVER_IS_OFFLINE);
             }
         }
 
@@ -112,8 +113,22 @@ public class DefaultDriverFacade implements DriverFacade
             }
             else
             {
-                logger.info("No car associated to driver");
+                logger.info(Constants.ERR_MSG_NO_CAR_TO_DESELECT);
             }
         }
+    }
+
+
+    @Override
+    public DriverDO findDriverByUsername(String username) throws EntityNotFoundException
+    {
+        return driverService.findDriverByUsername(username);
+    }
+
+
+    @Override
+    public List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException
+    {
+        return driverService.findDriversByCarAttributes(carDO);
     }
 }

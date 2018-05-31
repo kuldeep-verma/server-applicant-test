@@ -3,6 +3,7 @@ package com.mytaxi.facade.driver;
 import java.util.List;
 
 import com.mytaxi.datatransferobject.DriverDTO;
+import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.CarAlreadyInUseException;
@@ -72,4 +73,22 @@ public interface DriverFacade
      * @throws EntityNotFoundException
      */
     void deselectCar(long driverId) throws EntityNotFoundException, ConstraintsViolationException;
+
+
+    /**
+     * Search a driver by user name
+     * @param username
+     * @return DriverDO
+     * @throws EntityNotFoundException
+     */
+    DriverDO findDriverByUsername(String username) throws EntityNotFoundException;
+
+
+    /**
+     * Search drivers by car attributes 
+     * @param carDO
+     * @return List of DriverDO
+     */
+    List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException;
+
 }

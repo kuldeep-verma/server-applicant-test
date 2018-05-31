@@ -66,4 +66,21 @@ public interface DriverService
      * @return true if car is already in user otherwise false
      */
     boolean isCarAlreadyInUse(CarDO carDO);
+
+
+    /**
+     * Find a driver user name
+     * @param username
+     * @return DriverDO
+     * @throws EntityNotFoundException
+     */
+    DriverDO findDriverByUsername(String username) throws EntityNotFoundException;
+
+
+    /**
+     * Search drivers by car attributes
+     * @param carDO
+     * @return List of DriverDOs
+     */
+    List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException;
 }

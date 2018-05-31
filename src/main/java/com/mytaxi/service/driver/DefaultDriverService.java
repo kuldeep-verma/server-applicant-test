@@ -14,6 +14,7 @@ import com.mytaxi.domainvalue.GeoCoordinate;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
+import com.mytaxi.util.Constants;
 
 /**
  * Service to encapsulate the link between DAO and controller and to have business logic for some driver specific things.
@@ -65,7 +66,7 @@ public class DefaultDriverService implements DriverService
         }
         catch (DataIntegrityViolationException e)
         {
-            logger.warn("Some constraints are thrown due to driver creation", e);
+            logger.warn(Constants.ERR_MSG_CONSTRAINTS, e);
             throw new ConstraintsViolationException(e.getMessage());
         }
         return driver;
@@ -120,7 +121,7 @@ public class DefaultDriverService implements DriverService
     {
         return driverRepository
             .findById(driverId)
-            .orElseThrow(() -> new EntityNotFoundException("Could not find entity with id: " + driverId));
+            .orElseThrow(() -> new EntityNotFoundException(Constants.ERR_MSG_COULD_NOT_FIND_DRIVER + driverId));
     }
 
 
@@ -133,5 +134,21 @@ public class DefaultDriverService implements DriverService
             returnVal = true;
         }
         return returnVal;
+    }
+
+
+    @Override
+    public DriverDO findDriverByUsername(String username) throws EntityNotFoundException
+    {
+        return driverRepository
+            .findByUsernameIgnoreCase(username)
+            .orElseThrow(() -> new EntityNotFoundException(Constants.ERR_MSG_COULD_NOT_FIND_DRIVER_BY_NAME + username));
+    }
+
+
+    @Override
+    public List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException
+    {
+        return driverRepository.findDriversByCarAttributes(carDO).orElseThrow(() -> new EntityNotFoundException(Constants.ERR_MSG_NOT_RESULT_FOUND));
     }
 }
