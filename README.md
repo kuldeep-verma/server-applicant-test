@@ -35,9 +35,9 @@ You should be aware of the following conventions while you are working on this e
 
 ## Getting Started
 You should be able to start the example application by executing com.mytaxi.MytaxiServerApplicantTestApplication, which starts a webserver on port 8080 (http://localhost:8080) and serves SwaggerUI where can inspect and try existing endpoints.
-**Driver endpoint** - To create, get and delete driver and update location. Also to select and deselect a car.
-**Car endpoint** - To create, get and delete car.
-**Search endpoint** - To search drivers by username, online status and car characteristics like car id, license plate, color etc. All  attributes are optional and anyone can be entered and 'OR' conditionally in query.
+* **Driver endpoint** - To create, get and delete driver and update location. Also to select and deselect a car.
+* **Car endpoint** - To create, get and delete car.
+* **Search endpoint** - To search drivers by username, online status and car characteristics like car id, license plate, color etc. All  attributes are optional and anyone can be entered and 'OR' conditionally in query.
 
 ## Requirements
 The project is based on a small web service which uses the following technologies:
