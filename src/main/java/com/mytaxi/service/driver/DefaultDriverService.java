@@ -54,7 +54,7 @@ public class DefaultDriverService implements DriverService
      *
      * @param driverDO
      * @return
-     * @throws ConstraintsViolationException if a driver already exists with the given username, ... .
+     * @throws ConstraintsViolationException if a driver already exists with the given username
      */
     @Override
     public DriverDO create(DriverDO driverDO) throws ConstraintsViolationException
@@ -66,8 +66,8 @@ public class DefaultDriverService implements DriverService
         }
         catch (DataIntegrityViolationException e)
         {
-            logger.warn(Constants.ERR_MSG_CONSTRAINTS, e);
-            throw new ConstraintsViolationException(e.getMessage());
+            logger.warn(Constants.ERR_MSG_DRIVER_CONSTRAINTS, e);
+            throw new ConstraintsViolationException(Constants.ERR_MSG_DRIVER_ALREADY_EXISTS);
         }
         return driver;
     }

@@ -63,7 +63,7 @@ public class DriverServiceTest
 
 
     @Test(expected = ConstraintsViolationException.class)
-    public void testCreateDriverThrowExceptionWhenCarIsAlreadyCreated() throws ConstraintsViolationException
+    public void testCreateDriverThrowExceptionWhenDriverIsAlreadyCreated() throws ConstraintsViolationException
     {
         DriverDO mockOutputDriverDO = new DriverDO("TestUser", "pass");
         mockOutputDriverDO.setId(22l);
