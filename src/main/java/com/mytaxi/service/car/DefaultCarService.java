@@ -46,8 +46,8 @@ public class DefaultCarService implements CarService
         }
         catch (DataIntegrityViolationException e)
         {
-            logger.warn(Constants.ERR_MSG_CONSTRAINTS, e);
-            throw new ConstraintsViolationException(e.getMessage());
+            logger.warn(Constants.ERR_MSG_CAR_CONSTRAINTS, e);
+            throw new ConstraintsViolationException(Constants.ERR_MSG_CAR_ALREADY_EXISTS);
         }
         return car;
     }

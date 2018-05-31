@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Where;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "car")
+@Table(name = "car", uniqueConstraints = @UniqueConstraint(name = "uc_car_licensePlate", columnNames = {"license_plate"}))
 @Where(clause = "deleted=false")
 @EqualsAndHashCode
 @NoArgsConstructor
