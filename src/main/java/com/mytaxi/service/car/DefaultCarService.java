@@ -3,6 +3,7 @@ package com.mytaxi.service.car;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mytaxi.dataaccessobject.CarRepository;
 import com.mytaxi.domainobject.CarDO;
@@ -53,6 +54,7 @@ public class DefaultCarService implements CarService
 
 
     @Override
+    @Transactional
     public void delete(Long carId) throws EntityNotFoundException
     {
         CarDO carDO = findCar(carId);

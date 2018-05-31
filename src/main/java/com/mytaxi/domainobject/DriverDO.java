@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.mytaxi.domainvalue.GeoCoordinate;
@@ -31,6 +32,7 @@ import lombok.NoArgsConstructor;
 @Table(
     name = "driver",
     uniqueConstraints = @UniqueConstraint(name = "uc_username", columnNames = {"username"}))
+@Where(clause = "deleted=false")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor

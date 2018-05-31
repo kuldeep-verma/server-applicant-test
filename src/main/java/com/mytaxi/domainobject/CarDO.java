@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "car")
+@Where(clause = "deleted=false")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
