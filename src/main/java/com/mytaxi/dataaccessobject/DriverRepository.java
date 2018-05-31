@@ -43,11 +43,15 @@ public interface DriverRepository extends CrudRepository<DriverDO, Long>
 
 
     @Query("SELECT D FROM DriverDO D "
-        + "WHERE D.carDO IN (SELECT C.id FROM CarDO C "
+        + "WHERE (LOWER(D.username) = LOWER(:#{#username}) OR D.onlineStatus = :#{#onlinestatus}) OR "
+        + "D.carDO IN (SELECT C.id FROM CarDO C "
         + "WHERE LOWER(C.licensePlate) = LOWER(:#{#carDO.getLicensePlate()}) "
         + "OR LOWER(C.color) = LOWER(:#{#carDO.getColor()}) "
         + "OR LOWER(C.engineType) = LOWER(:#{#carDO.getEngineType()}) "
         + "OR C.seatCount = :#{#carDO.getSeatCount()} "
-        + "OR C.isConvertible = :#{#carDO.getIsConvertible()})")
-    Optional<List<DriverDO>> findDriversByCarAttributes(@Param("carDO") final CarDO carDO);
+        + "OR C.isConvertible = :#{#carDO.getIsConvertible()} "
+        + "OR C.id = :#{#carDO.getId()} "
+        + "OR C.manufacturerDO IN (SELECT M.id FROM ManufacturerDO M WHERE M.name = :#{#carDO.getManufacturerDO().getName()}))")
+    Optional<List<DriverDO>> findDriversByAttributes(
+        @Param("username") final String username, @Param("onlinestatus") final OnlineStatus onlinestatus, @Param("carDO") final CarDO carDO);
 }

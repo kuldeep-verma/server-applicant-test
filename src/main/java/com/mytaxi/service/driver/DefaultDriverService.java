@@ -135,20 +135,4 @@ public class DefaultDriverService implements DriverService
         }
         return returnVal;
     }
-
-
-    @Override
-    public DriverDO findDriverByUsername(String username) throws EntityNotFoundException
-    {
-        return driverRepository
-            .findByUsernameIgnoreCase(username)
-            .orElseThrow(() -> new EntityNotFoundException(Constants.ERR_MSG_COULD_NOT_FIND_DRIVER_BY_NAME + username));
-    }
-
-
-    @Override
-    public List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException
-    {
-        return driverRepository.findDriversByCarAttributes(carDO).orElseThrow(() -> new EntityNotFoundException(Constants.ERR_MSG_NOT_RESULT_FOUND));
-    }
 }
