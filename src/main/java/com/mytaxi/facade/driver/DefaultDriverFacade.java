@@ -117,18 +117,4 @@ public class DefaultDriverFacade implements DriverFacade
             }
         }
     }
-
-
-    @Override
-    public DriverDO findDriverByUsername(String username) throws EntityNotFoundException
-    {
-        return driverService.findDriverByUsername(username);
-    }
-
-
-    @Override
-    public List<DriverDO> findDriversByCarAttributes(CarDO carDO) throws EntityNotFoundException
-    {
-        return driverService.findDriversByCarAttributes(carDO);
-    }
 }

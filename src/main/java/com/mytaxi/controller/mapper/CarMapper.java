@@ -36,6 +36,8 @@ public class CarMapper
         manufacturerDO.setName(carDTO.getManufacturerName());
         carDO.setManufacturerDO(manufacturerDO);
         carDO.setSeatCount(carDTO.getSeatCount());
+        carDO.setId(carDTO.getId());
+        carDO.setColor(carDTO.getColor());
 
         return carDO;
     }

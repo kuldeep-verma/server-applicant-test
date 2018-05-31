@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.mytaxi.controller.mapper.DriverMapper;
 import com.mytaxi.datatransferobject.CarDTO;
 import com.mytaxi.datatransferobject.DriverDTO;
-import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
-import com.mytaxi.domainobject.ManufacturerDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
@@ -217,87 +214,4 @@ public class DriverControllerTest
 
         Assert.assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
     }
-
-
-    @Test
-    public void testSearchDriverByUsername() throws Exception
-    {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        when(driverFacade.findDriverByUsername(Mockito.anyString())).thenReturn(mockDriverDO);
-
-        MvcResult result = mvc.perform(get("/v1/drivers/search/username/{username}", "TestUser")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-
-        String expected = "{username:TestUser,password:pass}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-    }
-
-
-    @Test
-    public void testSearchDriverByUsernameThrowExceptionWhenUserNotFound()
-    {
-        String errMessage = "Entity not found";
-        try
-        {
-            when(driverFacade.findDriverByUsername(Mockito.anyString())).thenThrow(new EntityNotFoundException(errMessage));
-            Exception exp =
-                mvc.perform(get("/v1/drivers/search/username/{username}", "userName")).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
-            assertEquals(errMessage, exp.getMessage());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void testSearchDriversByCarAttributes() throws Exception
-    {
-        DriverDO driverDO = new DriverDO("NewUser", "pass");
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(132l, ZonedDateTime.now(), "White", "PK 101", "Gas", 5, true, false, manufacturerDO);
-        driverDO.setCarDO(carDO);
-
-        List<DriverDO> driverDOs = new ArrayList<>();
-        driverDOs.add(driverDO);
-
-        CarDTO carDTO = new CarDTO();
-        carDTO.setColor("White");
-
-        when(driverFacade.findDriversByCarAttributes(any(CarDO.class))).thenReturn(driverDOs);
-
-        MvcResult result =
-            mvc.perform(post("/v1/drivers/search/carAttributes").contentType(MediaType.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(carDTO))).andReturn();
-
-        String expected =
-            "[{\"username\":\"NewUser\",\"password\":\"pass\",\"car\":{\"id\":132,\"licensePlate\":\"PK 101\",\"color\":\"White\",\"engineType\":\"Gas\",\"convertible\":true,\"seatCount\":5,\"manufacturerName\":\"VW\"}}]";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-    }
-
-
-    @Test
-    public void testSearchDriversByCarAttributesThrowExceptionWhenNoResult()
-    {
-        String errMessage = "No result found";
-        CarDTO carDTO = new CarDTO();
-        carDTO.setColor("White");
-        try
-        {
-            when(driverFacade.findDriversByCarAttributes(any(CarDO.class))).thenThrow(new EntityNotFoundException(errMessage));
-            Exception exp =
-                mvc
-                    .perform(post("/v1/drivers/search/carAttributes").contentType(MediaType.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(carDTO)))
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
-
-            assertEquals(errMessage, exp.getMessage());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
 }

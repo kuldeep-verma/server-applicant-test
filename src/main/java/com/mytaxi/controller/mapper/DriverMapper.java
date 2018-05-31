@@ -48,7 +48,11 @@ public class DriverMapper
 
     public static DriverDTO makeDriverDTO(DriverDO driverDO, CarDO carDO)
     {
-        CarDTO carDTO = CarMapper.makeCarDTO(carDO);
+        CarDTO carDTO = null;
+        if (null != carDO)
+        {
+            carDTO = CarMapper.makeCarDTO(carDO);
+        }
 
         DriverDTO.DriverDTOBuilder driverDTOBuilder =
             DriverDTO
