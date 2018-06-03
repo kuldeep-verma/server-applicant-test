@@ -128,11 +128,6 @@ public class DefaultDriverService implements DriverService
     @Override
     public boolean isCarAlreadyInUse(CarDO carDO)
     {
-        boolean returnVal = false;
-        if (null != driverRepository.findByCarDO(carDO))
-        {
-            returnVal = true;
-        }
-        return returnVal;
+        return driverRepository.findByCarDO(carDO).isPresent();
     }
 }

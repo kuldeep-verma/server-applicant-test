@@ -5,6 +5,7 @@ import java.util.List;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 
@@ -64,6 +65,7 @@ public interface DriverService
      * To check car already in use
      * @param CarDO
      * @return true if car is already in user otherwise false
+     * @throws CarAlreadyInUseException 
      */
-    boolean isCarAlreadyInUse(CarDO carDO);
+    boolean isCarAlreadyInUse(CarDO carDO) throws CarAlreadyInUseException;
 }

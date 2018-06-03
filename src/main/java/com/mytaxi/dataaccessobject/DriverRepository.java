@@ -31,15 +31,7 @@ public interface DriverRepository extends CrudRepository<DriverDO, Long>
      * @param carDO
      * @return DriverDO
      */
-    DriverDO findByCarDO(CarDO carDO);
-
-
-    /**
-     * Find by user name
-     * @param username
-     * @return DriverDO
-     */
-    Optional<DriverDO> findByUsernameIgnoreCase(String username);
+    Optional<DriverDO> findByCarDO(CarDO carDO);
 
 
     @Query("SELECT D FROM DriverDO D "

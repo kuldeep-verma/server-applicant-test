@@ -124,7 +124,7 @@ public class DriverServiceTest
         manufacturerDO.setName("VW");
         CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
 
-        when(driverRepository.findByCarDO(carDO)).thenReturn(mockDriverDO);
+        when(driverRepository.findByCarDO(carDO)).thenReturn(Optional.of(mockDriverDO));
 
         boolean isCarInUse = defaultDriverService.isCarAlreadyInUse(carDO);
 

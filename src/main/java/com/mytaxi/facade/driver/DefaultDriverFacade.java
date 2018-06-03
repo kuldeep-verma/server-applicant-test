@@ -77,22 +77,18 @@ public class DefaultDriverFacade implements DriverFacade
     {
         DriverDO driverDO = driverService.find(driverId);
         CarDO carDO = carService.findCarById(carId);
-        if (null != driverDO && null != carDO)
+        if (OnlineStatus.ONLINE.equals(driverDO.getOnlineStatus()))
         {
-            if (OnlineStatus.ONLINE.equals(driverDO.getOnlineStatus()))
+            if (driverService.isCarAlreadyInUse(carDO))
             {
-                boolean isCarAlreadyInUser = driverService.isCarAlreadyInUse(carDO);
-                if (isCarAlreadyInUser)
-                {
-                    throw new CarAlreadyInUseException(Constants.ERR_MSG_CAR_ALREADY_IN_USE);
-                }
-                driverDO.setCarDO(carDO);
-                driverDO = driverService.create(driverDO);
+                throw new CarAlreadyInUseException(Constants.ERR_MSG_CAR_ALREADY_IN_USE);
             }
-            else
-            {
-                throw new DriverIsOfflineException(Constants.ERR_MSG_DRIVER_IS_OFFLINE);
-            }
+            driverDO.setCarDO(carDO);
+            driverDO = driverService.create(driverDO);
+        }
+        else
+        {
+            throw new DriverIsOfflineException(Constants.ERR_MSG_DRIVER_IS_OFFLINE);
         }
 
         return DriverMapper.makeDriverDTO(driverDO, carDO);
