@@ -8,8 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,24 +106,6 @@ public class DriverFacadeTest
         defaultDriverFacade.updateLocation(1l, 11d, 12d);
 
         verify(driverService, times(1)).updateLocation(any(Long.class), any(Double.class), any(Double.class));
-    }
-
-
-    @Test
-    public void testFindByStatus()
-    {
-        List<DriverDO> driverDOs = new ArrayList<>();
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        driverDOs.add(mockDriverDO);
-
-        DriverDO mockDriverDO1 = new DriverDO("UserN", "passN");
-        driverDOs.add(mockDriverDO1);
-
-        when(driverService.find(OnlineStatus.ONLINE)).thenReturn(driverDOs);
-
-        List<DriverDO> resultDriverDOs = defaultDriverFacade.find(OnlineStatus.ONLINE);
-
-        assertEquals(driverDOs, resultDriverDOs);
     }
 
 

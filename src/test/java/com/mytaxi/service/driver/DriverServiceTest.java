@@ -7,8 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -22,7 +20,6 @@ import com.mytaxi.dataaccessobject.DriverRepository;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainobject.ManufacturerDO;
-import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 
@@ -95,24 +92,6 @@ public class DriverServiceTest
         defaultDriverService.updateLocation(1l, 15d, 12d);
         assertEquals(Double.valueOf(15d), Double.valueOf(mockDriverDO.getCoordinate().getLongitude()));
         assertEquals(Double.valueOf(12d), Double.valueOf(mockDriverDO.getCoordinate().getLatitude()));
-    }
-
-
-    @Test
-    public void testFindByStatus()
-    {
-        List<DriverDO> driverDOs = new ArrayList<>();
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        driverDOs.add(mockDriverDO);
-
-        DriverDO mockDriverDO1 = new DriverDO("UserN", "passN");
-        driverDOs.add(mockDriverDO1);
-
-        when(driverRepository.findByOnlineStatus(OnlineStatus.ONLINE)).thenReturn(driverDOs);
-
-        List<DriverDO> resultDriverDOs = defaultDriverService.find(OnlineStatus.ONLINE);
-
-        assertEquals(driverDOs, resultDriverDOs);
     }
 
 

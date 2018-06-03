@@ -1,7 +1,5 @@
 package com.mytaxi.facade.driver;
 
-import java.util.List;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,13 +60,6 @@ public class DefaultDriverFacade implements DriverFacade
     public void updateLocation(long driverId, double longitude, double latitude) throws EntityNotFoundException
     {
         driverService.updateLocation(driverId, longitude, latitude);
-    }
-
-
-    @Override
-    public List<DriverDO> find(OnlineStatus onlineStatus)
-    {
-        return driverService.find(onlineStatus);
     }
 
 

@@ -9,9 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +28,6 @@ import com.mytaxi.controller.mapper.DriverMapper;
 import com.mytaxi.datatransferobject.CarDTO;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
-import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.facade.driver.DriverFacade;
@@ -142,24 +138,6 @@ public class DriverControllerTest
         MvcResult result =
             mvc.perform(put("/v1/drivers/{driverId}", 1l).param("longitude", "11").param("latitude", "23")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         Assert.assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-    }
-
-
-    @Test
-    public void findDriversByOnlineStatus() throws Exception
-    {
-        List<DriverDO> driverDOs = new ArrayList<>();
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        driverDOs.add(mockDriverDO);
-
-        DriverDO mockDriverDO1 = new DriverDO("UserN", "passN");
-        driverDOs.add(mockDriverDO1);
-
-        when(driverFacade.find(OnlineStatus.ONLINE)).thenReturn(driverDOs);
-        MvcResult result = mvc.perform(get("/v1/drivers").param("onlineStatus", OnlineStatus.ONLINE.toString())).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-        String expected = "[{\"username\":\"TestUser\",\"password\":\"pass\"},{\"username\":\"UserN\",\"password\":\"passN\"}]";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
     }
 
 

@@ -1,7 +1,5 @@
 package com.mytaxi.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mytaxi.controller.mapper.DriverMapper;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
-import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.DriverIsOfflineException;
@@ -75,13 +72,6 @@ public class DriverController
         throws EntityNotFoundException
     {
         driverFacade.updateLocation(driverId, longitude, latitude);
-    }
-
-
-    @GetMapping
-    public List<DriverDTO> findDrivers(@RequestParam OnlineStatus onlineStatus)
-    {
-        return DriverMapper.makeDriverDTOList(driverFacade.find(onlineStatus));
     }
 
 

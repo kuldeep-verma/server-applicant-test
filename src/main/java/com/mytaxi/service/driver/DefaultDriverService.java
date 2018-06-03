@@ -1,7 +1,5 @@
 package com.mytaxi.service.driver;
 
-import java.util.List;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import com.mytaxi.dataaccessobject.DriverRepository;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.GeoCoordinate;
-import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.util.Constants;
@@ -102,18 +99,6 @@ public class DefaultDriverService implements DriverService
     {
         DriverDO driverDO = findDriverChecked(driverId);
         driverDO.setCoordinate(new GeoCoordinate(latitude, longitude));
-    }
-
-
-    /**
-     * Find all drivers by online state.
-     *
-     * @param onlineStatus
-     */
-    @Override
-    public List<DriverDO> find(OnlineStatus onlineStatus)
-    {
-        return driverRepository.findByOnlineStatus(onlineStatus);
     }
 
 
