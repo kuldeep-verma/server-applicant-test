@@ -65,7 +65,7 @@ public class DriverControllerTest
         try
         {
             when(driverFacade.find(Mockito.anyLong())).thenThrow(new EntityNotFoundException(errMessage));
-            Exception exp = mvc.perform(get("/v1/drivers/{driverId}", 107l)).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
+            Exception exp = mvc.perform(get("/v1/drivers/{driverId}", 107l)).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn().getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }
         catch (Exception e)
@@ -173,7 +173,7 @@ public class DriverControllerTest
             when(driverFacade.selectCar(Mockito.anyLong(), Mockito.anyLong())).thenThrow(new EntityNotFoundException(errMessage));
             Exception exp =
                 mvc
-                    .perform(post("/v1/drivers/selectCar").param("driverId", "1").param("carId", "123")).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn()
+                    .perform(post("/v1/drivers/selectCar").param("driverId", "1").param("carId", "123")).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn()
                     .getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }

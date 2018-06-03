@@ -74,7 +74,7 @@ public class SearchControllerTest
             Exception exp =
                 mvc
                     .perform(get("/v1/drivers/search/attributes").param("color", "White").param("username", "Test").param("onlineStatus", OnlineStatus.ONLINE.toString()))
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
+                    .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn().getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }
         catch (Exception e)

@@ -70,7 +70,7 @@ public class CarControllerTest
         try
         {
             when(carFacade.findCarById(Mockito.anyLong())).thenThrow(new EntityNotFoundException(errMessage));
-            Exception exp = mvc.perform(get("/v1/cars/{driverId}", 199l)).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
+            Exception exp = mvc.perform(get("/v1/cars/{driverId}", 199l)).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn().getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }
         catch (Exception e)
