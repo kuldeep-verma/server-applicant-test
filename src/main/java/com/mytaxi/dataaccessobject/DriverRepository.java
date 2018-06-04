@@ -19,27 +19,11 @@ public interface DriverRepository extends CrudRepository<DriverDO, Long>
 {
 
     /**
-     * Find drivers by OnlineStatus
-     * @param onlineStatus
-     * @return List of DriverDO
-     */
-    List<DriverDO> findByOnlineStatus(OnlineStatus onlineStatus);
-
-
-    /**
      * To find driver by Car
      * @param carDO
      * @return DriverDO
      */
-    DriverDO findByCarDO(CarDO carDO);
-
-
-    /**
-     * Find by user name
-     * @param username
-     * @return DriverDO
-     */
-    Optional<DriverDO> findByUsernameIgnoreCase(String username);
+    Optional<DriverDO> findByCarDO(CarDO carDO);
 
 
     @Query("SELECT D FROM DriverDO D "

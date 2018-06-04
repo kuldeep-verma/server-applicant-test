@@ -9,10 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,7 +29,6 @@ import com.mytaxi.controller.mapper.DriverMapper;
 import com.mytaxi.datatransferobject.CarDTO;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
-import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.facade.driver.DriverFacade;
@@ -47,11 +44,41 @@ public class DriverControllerTest
     @MockBean
     private DriverFacade driverFacade;
 
+    private static DriverDO mockDriverDO;
+
+    private static DriverDO mockInputDriverDO;
+
+    private static DriverDO mockReturnDriverDO;
+
+    private static CarDTO carDTO;
+
+    private static DriverDTO driverDTO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        mockDriverDO = new DriverDO("TestUser", "pass");
+
+        mockInputDriverDO = new DriverDO("NewUser", "pass");
+
+        mockReturnDriverDO = new DriverDO("NewUser", "pass");
+
+        carDTO = new CarDTO();
+        carDTO.setId(1l);
+        carDTO.setColor("White");
+        carDTO.setEngineType("Gas");
+
+        driverDTO = new DriverDTO();
+        driverDTO.setId(1l);
+        driverDTO.setUsername("existingUser");
+        driverDTO.setPassword("pass");
+    }
+
 
     @Test
     public void testGetDriver() throws Exception
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
         when(driverFacade.find(Mockito.anyLong())).thenReturn(mockDriverDO);
 
         MvcResult result = mvc.perform(get("/v1/drivers/{driverId}", 1l)).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -69,7 +96,7 @@ public class DriverControllerTest
         try
         {
             when(driverFacade.find(Mockito.anyLong())).thenThrow(new EntityNotFoundException(errMessage));
-            Exception exp = mvc.perform(get("/v1/drivers/{driverId}", 107l)).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
+            Exception exp = mvc.perform(get("/v1/drivers/{driverId}", 107l)).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn().getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }
         catch (Exception e)
@@ -82,9 +109,7 @@ public class DriverControllerTest
     @Test
     public void testCreateDriver() throws Exception
     {
-        DriverDO mockInputDriverDO = new DriverDO("NewUser", "pass");
         DriverDTO driverDTO = DriverMapper.makeDriverDTO(mockInputDriverDO);
-        DriverDO mockReturnDriverDO = new DriverDO("NewUser", "pass");
         mockReturnDriverDO.setId(189l);
 
         when(driverFacade.create(any(DriverDO.class))).thenReturn(mockReturnDriverDO);
@@ -103,7 +128,6 @@ public class DriverControllerTest
     @Test
     public void testCreateDriverExceptionWhenDriverAlreadyCreated() throws Exception
     {
-        DriverDO mockInputDriverDO = new DriverDO("NewUser", "pass");
         DriverDTO driverDTO = DriverMapper.makeDriverDTO(mockInputDriverDO);
         String errMessage = "Some constraints exception";
 
@@ -146,34 +170,8 @@ public class DriverControllerTest
 
 
     @Test
-    public void findDriversByOnlineStatus() throws Exception
-    {
-        List<DriverDO> driverDOs = new ArrayList<>();
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        driverDOs.add(mockDriverDO);
-
-        DriverDO mockDriverDO1 = new DriverDO("UserN", "passN");
-        driverDOs.add(mockDriverDO1);
-
-        when(driverFacade.find(OnlineStatus.ONLINE)).thenReturn(driverDOs);
-        MvcResult result = mvc.perform(get("/v1/drivers").param("onlineStatus", OnlineStatus.ONLINE.toString())).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-        String expected = "[{\"username\":\"TestUser\",\"password\":\"pass\"},{\"username\":\"UserN\",\"password\":\"passN\"}]";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-    }
-
-
-    @Test
     public void testSelectCar() throws Exception
     {
-        CarDTO carDTO = new CarDTO();
-        carDTO.setId(1l);
-        carDTO.setColor("White");
-        carDTO.setEngineType("Gas");
-        DriverDTO driverDTO = new DriverDTO();
-        driverDTO.setId(1l);
-        driverDTO.setUsername("existingUser");
-        driverDTO.setPassword("pass");
         driverDTO.setCarDTO(carDTO);
 
         when(driverFacade.selectCar(Mockito.anyLong(), Mockito.anyLong())).thenReturn(driverDTO);
@@ -195,7 +193,7 @@ public class DriverControllerTest
             when(driverFacade.selectCar(Mockito.anyLong(), Mockito.anyLong())).thenThrow(new EntityNotFoundException(errMessage));
             Exception exp =
                 mvc
-                    .perform(post("/v1/drivers/selectCar").param("driverId", "1").param("carId", "123")).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn()
+                    .perform(post("/v1/drivers/selectCar").param("driverId", "1").param("carId", "123")).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn()
                     .getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }

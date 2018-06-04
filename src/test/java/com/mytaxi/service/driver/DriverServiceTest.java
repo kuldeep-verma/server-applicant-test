@@ -7,26 +7,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mytaxi.dataaccessobject.DriverRepository;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainobject.ManufacturerDO;
-import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DriverServiceTest
 {
     @Mock
@@ -35,11 +33,24 @@ public class DriverServiceTest
     @InjectMocks
     private DefaultDriverService defaultDriverService;
 
+    private static DriverDO mockDriverDO;
+
+    private static CarDO carDO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        mockDriverDO = new DriverDO("TestUser", "pass");
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+    }
+
 
     @Test
     public void testFind() throws EntityNotFoundException
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
         mockDriverDO.setId(33l);
         when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(mockDriverDO));
 
@@ -52,12 +63,11 @@ public class DriverServiceTest
     @Test
     public void testCreateDriver() throws ConstraintsViolationException
     {
-        DriverDO mockOutputDriverDO = new DriverDO("TestUser", "pass");
-        mockOutputDriverDO.setId(22l);
-        when(driverRepository.save(any(DriverDO.class))).thenReturn(mockOutputDriverDO);
+        mockDriverDO.setId(22l);
+        when(driverRepository.save(any(DriverDO.class))).thenReturn(mockDriverDO);
 
-        DriverDO result = defaultDriverService.create(mockOutputDriverDO);
-        assertEquals(mockOutputDriverDO, result);
+        DriverDO result = defaultDriverService.create(mockDriverDO);
+        assertEquals(mockDriverDO, result);
         verify(driverRepository, times(1)).save(any(DriverDO.class));
     }
 
@@ -65,18 +75,16 @@ public class DriverServiceTest
     @Test(expected = ConstraintsViolationException.class)
     public void testCreateDriverThrowExceptionWhenDriverIsAlreadyCreated() throws ConstraintsViolationException
     {
-        DriverDO mockOutputDriverDO = new DriverDO("TestUser", "pass");
-        mockOutputDriverDO.setId(22l);
+        mockDriverDO.setId(22l);
 
         when(driverRepository.save(any(DriverDO.class))).thenThrow(new DataIntegrityViolationException("Driver already created"));
-        defaultDriverService.create(mockOutputDriverDO);
+        defaultDriverService.create(mockDriverDO);
     }
 
 
     @Test
     public void testDeleteCar() throws EntityNotFoundException
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
         mockDriverDO.setId(33l);
         when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(mockDriverDO));
 
@@ -88,7 +96,6 @@ public class DriverServiceTest
     @Test
     public void testUpdateLocation() throws EntityNotFoundException
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
         mockDriverDO.setId(33l);
         when(driverRepository.findById(any(Long.class))).thenReturn(Optional.of(mockDriverDO));
 
@@ -99,32 +106,9 @@ public class DriverServiceTest
 
 
     @Test
-    public void testFindByStatus()
-    {
-        List<DriverDO> driverDOs = new ArrayList<>();
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        driverDOs.add(mockDriverDO);
-
-        DriverDO mockDriverDO1 = new DriverDO("UserN", "passN");
-        driverDOs.add(mockDriverDO1);
-
-        when(driverRepository.findByOnlineStatus(OnlineStatus.ONLINE)).thenReturn(driverDOs);
-
-        List<DriverDO> resultDriverDOs = defaultDriverService.find(OnlineStatus.ONLINE);
-
-        assertEquals(driverDOs, resultDriverDOs);
-    }
-
-
-    @Test
     public void testIsCarAlreadyInUseWhenDriverIsUsingACar()
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
-
-        when(driverRepository.findByCarDO(carDO)).thenReturn(mockDriverDO);
+        when(driverRepository.findByCarDO(carDO)).thenReturn(Optional.of(mockDriverDO));
 
         boolean isCarInUse = defaultDriverService.isCarAlreadyInUse(carDO);
 
@@ -135,11 +119,7 @@ public class DriverServiceTest
     @Test
     public void testIsCarAlreadyInUseWhenDriverIsNotUsingACar()
     {
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
-
-        when(driverRepository.findByCarDO(carDO)).thenReturn(null);
+        when(driverRepository.findByCarDO(carDO)).thenReturn(Optional.empty());
 
         boolean isCarInUse = defaultDriverService.isCarAlreadyInUse(carDO);
 

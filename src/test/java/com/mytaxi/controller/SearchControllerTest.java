@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -37,14 +38,25 @@ public class SearchControllerTest
     @MockBean
     private SearchFacade searchFacade;
 
+    private static DriverDO driverDO;
+
+    private static CarDO carDO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        driverDO = new DriverDO("NewUser", "pass");
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+
+        carDO = new CarDO(132l, ZonedDateTime.now(), "White", "PK 101", "Gas", 5, true, false, manufacturerDO);
+    }
+
 
     @Test
     public void testSearchDriversByAttributes() throws Exception
     {
-        DriverDO driverDO = new DriverDO("NewUser", "pass");
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(132l, ZonedDateTime.now(), "White", "PK 101", "Gas", 5, true, false, manufacturerDO);
         driverDO.setCarDO(carDO);
 
         List<DriverDO> driverDOs = new ArrayList<>();
@@ -74,7 +86,7 @@ public class SearchControllerTest
             Exception exp =
                 mvc
                     .perform(get("/v1/drivers/search/attributes").param("color", "White").param("username", "Test").param("onlineStatus", OnlineStatus.ONLINE.toString()))
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResolvedException();
+                    .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn().getResolvedException();
             assertEquals(errMessage, exp.getMessage());
         }
         catch (Exception e)

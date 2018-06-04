@@ -9,11 +9,12 @@ import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.ManufacturerDO;
@@ -21,7 +22,7 @@ import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CarFacadeTest
 {
     @Mock
@@ -30,14 +31,21 @@ public class CarFacadeTest
     @InjectMocks
     private DefaultCarFacade defaultCarFacade;
 
+    private static CarDO carDO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+    }
+
 
     @Test
     public void testfindCarById() throws EntityNotFoundException
     {
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
-
         when(carService.findCarById(any(Long.class))).thenReturn(carDO);
 
         CarDO result = defaultCarFacade.findCarById(554l);
@@ -51,7 +59,7 @@ public class CarFacadeTest
     {
         when(carService.findCarById(any(Long.class))).thenThrow(new EntityNotFoundException("Car not found"));
         defaultCarFacade.findCarById(554l);
-        
+
         verify(defaultCarFacade, times(1)).findCarById(any(Long.class));
     }
 
@@ -59,10 +67,6 @@ public class CarFacadeTest
     @Test
     public void testCreateCar() throws ConstraintsViolationException
     {
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(50l, ZonedDateTime.now(), "Red", "HH 101", "Gas", 5, true, false, manufacturerDO);
-
         when(carService.create(any(CarDO.class))).thenReturn(carDO);
 
         CarDO result = defaultCarFacade.create(carDO);
@@ -74,10 +78,6 @@ public class CarFacadeTest
     @Test(expected = ConstraintsViolationException.class)
     public void testCreateCarThrowExceptionWhenCarIsAlreadyCreated() throws ConstraintsViolationException
     {
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(50l, ZonedDateTime.now(), "Red", "HH 101", "Gas", 5, true, false, manufacturerDO);
-
         when(carService.create(any(CarDO.class))).thenThrow(new ConstraintsViolationException("Car already created"));
         defaultCarFacade.create(carDO);
     }
