@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.ManufacturerDO;
@@ -21,7 +21,7 @@ import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CarFacadeTest
 {
     @Mock
@@ -51,7 +51,7 @@ public class CarFacadeTest
     {
         when(carService.findCarById(any(Long.class))).thenThrow(new EntityNotFoundException("Car not found"));
         defaultCarFacade.findCarById(554l);
-        
+
         verify(defaultCarFacade, times(1)).findCarById(any(Long.class));
     }
 

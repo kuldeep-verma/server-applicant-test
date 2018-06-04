@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mytaxi.dataaccessobject.CarRepository;
 import com.mytaxi.domainobject.CarDO;
@@ -22,7 +22,7 @@ import com.mytaxi.domainobject.ManufacturerDO;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CarServiceTest
 {
     @Mock
@@ -82,7 +82,7 @@ public class CarServiceTest
         CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
 
         when(carRepository.findById(any(Long.class))).thenReturn(Optional.of(carDO));
-        
+
         defaultCarService.delete(554l);
         assertEquals(true, carDO.getIsDeleted());
     }
