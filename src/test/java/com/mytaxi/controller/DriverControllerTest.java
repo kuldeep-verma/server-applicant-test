@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -43,11 +44,41 @@ public class DriverControllerTest
     @MockBean
     private DriverFacade driverFacade;
 
+    private static DriverDO mockDriverDO;
+
+    private static DriverDO mockInputDriverDO;
+
+    private static DriverDO mockReturnDriverDO;
+
+    private static CarDTO carDTO;
+
+    private static DriverDTO driverDTO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        mockDriverDO = new DriverDO("TestUser", "pass");
+
+        mockInputDriverDO = new DriverDO("NewUser", "pass");
+
+        mockReturnDriverDO = new DriverDO("NewUser", "pass");
+
+        carDTO = new CarDTO();
+        carDTO.setId(1l);
+        carDTO.setColor("White");
+        carDTO.setEngineType("Gas");
+
+        driverDTO = new DriverDTO();
+        driverDTO.setId(1l);
+        driverDTO.setUsername("existingUser");
+        driverDTO.setPassword("pass");
+    }
+
 
     @Test
     public void testGetDriver() throws Exception
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
         when(driverFacade.find(Mockito.anyLong())).thenReturn(mockDriverDO);
 
         MvcResult result = mvc.perform(get("/v1/drivers/{driverId}", 1l)).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -78,9 +109,7 @@ public class DriverControllerTest
     @Test
     public void testCreateDriver() throws Exception
     {
-        DriverDO mockInputDriverDO = new DriverDO("NewUser", "pass");
         DriverDTO driverDTO = DriverMapper.makeDriverDTO(mockInputDriverDO);
-        DriverDO mockReturnDriverDO = new DriverDO("NewUser", "pass");
         mockReturnDriverDO.setId(189l);
 
         when(driverFacade.create(any(DriverDO.class))).thenReturn(mockReturnDriverDO);
@@ -99,7 +128,6 @@ public class DriverControllerTest
     @Test
     public void testCreateDriverExceptionWhenDriverAlreadyCreated() throws Exception
     {
-        DriverDO mockInputDriverDO = new DriverDO("NewUser", "pass");
         DriverDTO driverDTO = DriverMapper.makeDriverDTO(mockInputDriverDO);
         String errMessage = "Some constraints exception";
 
@@ -144,14 +172,6 @@ public class DriverControllerTest
     @Test
     public void testSelectCar() throws Exception
     {
-        CarDTO carDTO = new CarDTO();
-        carDTO.setId(1l);
-        carDTO.setColor("White");
-        carDTO.setEngineType("Gas");
-        DriverDTO driverDTO = new DriverDTO();
-        driverDTO.setId(1l);
-        driverDTO.setUsername("existingUser");
-        driverDTO.setPassword("pass");
         driverDTO.setCarDTO(carDTO);
 
         when(driverFacade.selectCar(Mockito.anyLong(), Mockito.anyLong())).thenReturn(driverDTO);

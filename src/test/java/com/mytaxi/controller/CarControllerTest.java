@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.time.ZonedDateTime;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -44,17 +45,31 @@ public class CarControllerTest
     @MockBean
     private CarFacade carFacade;
 
+    private static CarDO mockCarDO;
 
-    @Test
-    public void testGetCar() throws Exception
+    private static CarDO mockInputCarDO;
+
+    private static CarDO mockReturnCarDO;
+
+    @BeforeClass
+    public static void setup()
     {
-        CarDO mockCarDO = new CarDO();
+        mockCarDO = new CarDO();
         mockCarDO.setId(1l);
         mockCarDO.setLicensePlate("KV001");
         ManufacturerDO manufacturerDO = new ManufacturerDO();
         manufacturerDO.setName("VW");
         mockCarDO.setManufacturerDO(manufacturerDO);
 
+        mockInputCarDO = new CarDO(132l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+        
+        mockReturnCarDO = new CarDO(5l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+    }
+
+
+    @Test
+    public void testGetCar() throws Exception
+    {
         when(carFacade.findCarById(Mockito.anyLong())).thenReturn(mockCarDO);
 
         MvcResult result = mvc.perform(get("/v1/cars/{carId}", 1l)).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -83,13 +98,7 @@ public class CarControllerTest
     @Test
     public void testCreateCar() throws Exception
     {
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO mockInputCarDO = new CarDO(132l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
-
         CarDTO carDTO = CarMapper.makeCarDTO(mockInputCarDO);
-
-        CarDO mockReturnCarDO = new CarDO(5l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
 
         when(carFacade.create(any(CarDO.class))).thenReturn(mockReturnCarDO);
 
@@ -107,9 +116,6 @@ public class CarControllerTest
     @Test
     public void testCreateCarExceptionWhenCarAlreadyCreated() throws Exception
     {
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO mockInputCarDO = new CarDO(132l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
         CarDTO carDTO = CarMapper.makeCarDTO(mockInputCarDO);
         String errMessage = "Some constraints exception";
 

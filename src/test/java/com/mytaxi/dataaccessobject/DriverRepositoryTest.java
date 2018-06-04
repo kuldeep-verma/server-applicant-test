@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,25 @@ public class DriverRepositoryTest
     @Autowired
     private DriverRepository driverRepository;
 
+    private static DriverDO driverDO;
+
+    private static CarDO carDO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        driverDO = new DriverDO("User", "Pass");
+        driverDO.setOnlineStatus(OnlineStatus.ONLINE);
+
+        carDO = new CarDO();
+        carDO.setLicensePlate("HH 001");
+    }
+
 
     @Test
     public void testSave()
     {
-        DriverDO driverDO = new DriverDO("User", "Pass");
-        driverDO.setOnlineStatus(OnlineStatus.ONLINE);
-
         DriverDO savedDriverDO = entityManager.persistFlushFind(driverDO);
 
         DriverDO driver = driverRepository.findById(savedDriverDO.getId()).get();
@@ -102,7 +115,6 @@ public class DriverRepositoryTest
     @Test
     public void testFindByCarDOWhenNoDriverFound()
     {
-        CarDO carDO = new CarDO();
         carDO.setId(55l);
 
         Optional<DriverDO> driverDO = driverRepository.findByCarDO(carDO);
@@ -114,7 +126,6 @@ public class DriverRepositoryTest
     @Test
     public void testFindDriversByAttributesWhenDriverFoundByUsername()
     {
-        CarDO carDO = new CarDO();
         ManufacturerDO manufacturerDO = new ManufacturerDO();
         carDO.setManufacturerDO(manufacturerDO);
 
@@ -130,10 +141,6 @@ public class DriverRepositoryTest
     @Test
     public void testFindDriversByAttributesWhenDriverFoundByOnlinestatus()
     {
-        CarDO carDO = new CarDO();
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        carDO.setManufacturerDO(manufacturerDO);
-
         String username = "driver04";
         List<DriverDO> drivers = driverRepository.findDriversByAttributes(null, OnlineStatus.ONLINE, carDO).get();
 

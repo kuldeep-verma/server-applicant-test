@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,17 @@ public class CarRepositoryTest
     @Autowired
     private TestEntityManager entityManager;
 
+    private static CarDO carDO;
+    
+    @BeforeClass
+    public static void setup()
+    {
+        carDO = new CarDO();
+    }
 
     @Test
     public void testSave()
     {
-        CarDO carDO = new CarDO();
         carDO.setLicensePlate("BR 101");
 
         CarDO savedCarDO = entityManager.persistFlushFind(carDO);
@@ -81,7 +88,6 @@ public class CarRepositoryTest
     @Test(expected = PersistenceException.class)
     public void testSaveSameLicensePlate()
     {
-        CarDO carDO = new CarDO();
         carDO.setColor("Brown");
         carDO.setLicensePlate("KV 001");
 

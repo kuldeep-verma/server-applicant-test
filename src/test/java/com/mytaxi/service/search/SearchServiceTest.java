@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,17 +31,28 @@ public class SearchServiceTest
     @InjectMocks
     private DefaultSearchService defaultSearchService;
 
+    private static DriverDO mockDriverDO;
+
+    private static CarDO carDO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        mockDriverDO = new DriverDO("TestUser", "pass");
+
+        carDO = new CarDO(132l, ZonedDateTime.now(), "White", "PK 101", "Gas", 5, true, false, null);
+    }
+
 
     @Test
     public void testSearchDriversByAttributes() throws EntityNotFoundException
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
         List<DriverDO> driverDOs = new ArrayList<>();
         driverDOs.add(mockDriverDO);
 
         when(driverRepository.findDriversByAttributes(any(String.class), any(OnlineStatus.class), any(CarDO.class))).thenReturn(Optional.of(driverDOs));
 
-        CarDO carDO = new CarDO(132l, ZonedDateTime.now(), "White", "PK 101", "Gas", 5, true, false, null);
         List<DriverDO> resultDriverDOs = defaultSearchService.searchDriversByAttributes("TestUser", OnlineStatus.ONLINE, carDO);
 
         assertEquals(driverDOs, resultDriverDOs);

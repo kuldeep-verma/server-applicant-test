@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,12 +40,31 @@ public class DriverFacadeTest
     @InjectMocks
     private DefaultDriverFacade defaultDriverFacade;
 
+    private static DriverDO mockDriverDO;
+
+    private static CarDO carDO;
+
+    private static DriverDO mockOutputDriverDO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        mockDriverDO = new DriverDO("TestUser", "pass");
+        mockDriverDO.setId(33l);
+
+        ManufacturerDO manufacturerDO = new ManufacturerDO();
+        manufacturerDO.setName("VW");
+        carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
+
+        mockOutputDriverDO = new DriverDO("TestUser", "pass");
+        mockOutputDriverDO.setId(22l);
+    }
+
 
     @Test
     public void testFind() throws EntityNotFoundException
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        mockDriverDO.setId(33l);
         when(driverService.find(any(Long.class))).thenReturn(mockDriverDO);
 
         DriverDO result = defaultDriverFacade.find(33l);
@@ -66,12 +86,11 @@ public class DriverFacadeTest
     @Test
     public void testCreateDriver() throws ConstraintsViolationException
     {
-        DriverDO mockOutputDriverDO = new DriverDO("TestUser", "pass");
-        mockOutputDriverDO.setId(22l);
-        when(driverService.create(any(DriverDO.class))).thenReturn(mockOutputDriverDO);
+        mockDriverDO.setId(22l);
+        when(driverService.create(any(DriverDO.class))).thenReturn(mockDriverDO);
 
-        DriverDO result = defaultDriverFacade.create(mockOutputDriverDO);
-        assertEquals(mockOutputDriverDO, result);
+        DriverDO result = defaultDriverFacade.create(mockDriverDO);
+        assertEquals(mockDriverDO, result);
         verify(driverService, times(1)).create(any(DriverDO.class));
     }
 
@@ -79,9 +98,6 @@ public class DriverFacadeTest
     @Test(expected = ConstraintsViolationException.class)
     public void testCreateDriverThrowExceptionWhenDriverIsAlreadyCreated() throws ConstraintsViolationException
     {
-        DriverDO mockDriverDO = new DriverDO("TestUser", "pass");
-        mockDriverDO.setId(22l);
-
         when(driverService.create(any(DriverDO.class))).thenThrow(new ConstraintsViolationException("Driver already created"));
         defaultDriverFacade.create(mockDriverDO);
     }
@@ -112,17 +128,11 @@ public class DriverFacadeTest
     @Test
     public void testSelectCar() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
-        DriverDO driverDO = new DriverDO("TestUser", "pass");
-        driverDO.setOnlineStatus(OnlineStatus.ONLINE);
-        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+        mockDriverDO.setOnlineStatus(OnlineStatus.ONLINE);
+        when(driverService.find(any(Long.class))).thenReturn(mockDriverDO);
 
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
         when(carService.findCarById(any(Long.class))).thenReturn(carDO);
 
-        DriverDO mockOutputDriverDO = new DriverDO("TestUser", "pass");
-        mockOutputDriverDO.setId(22l);
         when(driverService.create(any(DriverDO.class))).thenReturn(mockOutputDriverDO);
 
         DriverDTO driverDTO = defaultDriverFacade.selectCar(1l, 1l);
@@ -136,8 +146,7 @@ public class DriverFacadeTest
     @Test(expected = EntityNotFoundException.class)
     public void testSelectCarThrowExceptionWhenCarNotFound() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
-        DriverDO driverDO = new DriverDO("TestUser", "pass");
-        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+        when(driverService.find(any(Long.class))).thenReturn(mockDriverDO);
 
         when(carService.findCarById(any(Long.class))).thenThrow(new EntityNotFoundException("Car not found"));
 
@@ -151,13 +160,9 @@ public class DriverFacadeTest
     @Test(expected = DriverIsOfflineException.class)
     public void testSelectCarThrowExceptionDriverIsOffline() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
-        DriverDO driverDO = new DriverDO("TestUser", "pass");
-        driverDO.setOnlineStatus(OnlineStatus.OFFLINE);
-        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+        mockDriverDO.setOnlineStatus(OnlineStatus.OFFLINE);
+        when(driverService.find(any(Long.class))).thenReturn(mockDriverDO);
 
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
         when(carService.findCarById(any(Long.class))).thenReturn(carDO);
 
         defaultDriverFacade.selectCar(1l, 1l);
@@ -170,13 +175,9 @@ public class DriverFacadeTest
     @Test(expected = CarAlreadyInUseException.class)
     public void testSelectCarThrowExceptionCarAlreadyInUse() throws EntityNotFoundException, ConstraintsViolationException, CarAlreadyInUseException, DriverIsOfflineException
     {
-        DriverDO driverDO = new DriverDO("TestUser", "pass");
-        driverDO.setOnlineStatus(OnlineStatus.ONLINE);
-        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+        mockDriverDO.setOnlineStatus(OnlineStatus.ONLINE);
+        when(driverService.find(any(Long.class))).thenReturn(mockDriverDO);
 
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
         when(carService.findCarById(any(Long.class))).thenReturn(carDO);
 
         when(driverService.isCarAlreadyInUse(any(CarDO.class))).thenReturn(true);
@@ -191,16 +192,10 @@ public class DriverFacadeTest
     @Test
     public void testDeselectCar() throws EntityNotFoundException, ConstraintsViolationException
     {
-        DriverDO driverDO = new DriverDO("TestUser", "pass");
-        ManufacturerDO manufacturerDO = new ManufacturerDO();
-        manufacturerDO.setName("VW");
-        CarDO carDO = new CarDO(554l, ZonedDateTime.now(), "Red", "PK 101", "Gas", 5, true, false, manufacturerDO);
-        driverDO.setCarDO(carDO);
+        mockDriverDO.setCarDO(carDO);
 
-        when(driverService.find(any(Long.class))).thenReturn(driverDO);
+        when(driverService.find(any(Long.class))).thenReturn(mockDriverDO);
 
-        DriverDO mockOutputDriverDO = new DriverDO("TestUser", "pass");
-        mockOutputDriverDO.setId(22l);
         when(driverService.create(any(DriverDO.class))).thenReturn(mockOutputDriverDO);
 
         defaultDriverFacade.deselectCar(1l);

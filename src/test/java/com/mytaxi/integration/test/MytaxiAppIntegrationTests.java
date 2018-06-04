@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,23 @@ public class MytaxiAppIntegrationTests
 {
     @Autowired
     private TestRestTemplate restTemplate;
+
+    private static CarDTO carDTO;
+
+    private static DriverDTO driverDTO;
+
+
+    @BeforeClass
+    public static void setup()
+    {
+        carDTO = new CarDTO();
+        carDTO.setLicensePlate("Test 786");
+        carDTO.setManufacturerName("Test");
+
+        driverDTO = new DriverDTO();
+        driverDTO.setUsername("driver01");
+        driverDTO.setPassword("Pass");
+    }
 
 
     @Test
@@ -45,9 +63,6 @@ public class MytaxiAppIntegrationTests
     @Test
     public void testCreateCar()
     {
-        CarDTO carDTO = new CarDTO();
-        carDTO.setLicensePlate("Test 786");
-        carDTO.setManufacturerName("Test");
         ResponseEntity<CarDTO> responseEntity = restTemplate.postForEntity("/v1/cars/", carDTO, CarDTO.class);
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertEquals("Test 786", responseEntity.getBody().getLicensePlate());
@@ -57,7 +72,6 @@ public class MytaxiAppIntegrationTests
     @Test
     public void testCreateCarSaveDuplicateCar()
     {
-        CarDTO carDTO = new CarDTO();
         carDTO.setLicensePlate("KV 001");
         carDTO.setManufacturerName("Suzuki");
         ResponseEntity<CarDTO> responseEntity = restTemplate.postForEntity("/v1/cars/", carDTO, CarDTO.class);
@@ -113,9 +127,6 @@ public class MytaxiAppIntegrationTests
     @Test
     public void testCreateDriverWithDuplicateUsername()
     {
-        DriverDTO driverDTO = new DriverDTO();
-        driverDTO.setUsername("driver01");
-        driverDTO.setPassword("Pass");
         ResponseEntity<DriverDTO> responseEntity = restTemplate.postForEntity("/v1/drivers/", driverDTO, DriverDTO.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
